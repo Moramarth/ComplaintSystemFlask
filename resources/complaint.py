@@ -11,7 +11,7 @@ from utils.decorators import validate_schema, permission_required
 
 class ComplaintListCreate(Resource):
     @auth.login_required
-    @validate_schema(RequestComplaintSchema)
+    # @validate_schema(RequestComplaintSchema)
     def get(self):
         user = auth.current_user()
         complaints = ComplaintManager.get_all_complainer_claims(user)
@@ -25,3 +25,19 @@ class ComplaintListCreate(Resource):
         data = request.get_json()
         complaint = ComplaintManager.create(data, complainer.id)
         return ResponseComplaintSchema().dump(complaint)
+
+
+class ApproveComplaint(Resource):
+    @auth.login_required
+    @permission_required(RoleType.approver)
+    def put(self, id_):
+        ComplaintManager.approve(id_)
+        return 200
+
+
+class RejectComplaint(Resource):
+    @auth.login_required
+    @permission_required(RoleType.approver)
+    def put(self, id_):
+        ComplaintManager.reject(id_)
+        return 200

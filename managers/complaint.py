@@ -1,5 +1,5 @@
 from db import db
-from models import ComplaintModel, ComplainerModel
+from models import ComplaintModel, ComplainerModel, ComplaintState
 
 
 class ComplaintManager:
@@ -16,3 +16,11 @@ class ComplaintManager:
         if isinstance(user, ComplainerModel):
             return ComplaintModel.query.filter_by(complainer_id=user.id).all()
         return ComplaintModel.query.all()
+
+    @staticmethod
+    def approve(id_):
+        ComplaintModel.query.filter_by(id=id_).update({"status": ComplaintState.approved})
+
+    @staticmethod
+    def reject(id_):
+        ComplaintModel.query.filter_by(id=id_).update({"status": ComplaintState.rejected})

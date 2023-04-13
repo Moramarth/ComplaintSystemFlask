@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class RoleType(Enum):
-    approover = "approover"
+    approver = "approver"
     complainer = "complainer"
     admin = "admin"
 

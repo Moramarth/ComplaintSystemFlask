@@ -21,7 +21,7 @@ class ComplainerModel(BaseUserModel):
 class ApproverModel(BaseUserModel):
     __tablename__ = "approvers"
 
-    role = db.Column(db.Enum(RoleType), default=RoleType.approover, nullable=False)
+    role = db.Column(db.Enum(RoleType), default=RoleType.approver, nullable=False)
 
 
 class AdministratorModel(BaseUserModel):
