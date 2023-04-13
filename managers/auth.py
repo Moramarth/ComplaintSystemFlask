@@ -4,6 +4,7 @@ import jwt
 from decouple import config
 from flask_httpauth import HTTPTokenAuth
 from werkzeug.exceptions import Unauthorized
+from models.user import ComplainerModel
 
 
 class AuthManager:
