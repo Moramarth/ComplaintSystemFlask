@@ -14,3 +14,7 @@ class RequestRegisterUserSchema(UserSchema):
 
 class RequestLoginUserSchema(UserSchema):
     pass
+
+
+class RequestRegisterComplainerSchema(RequestRegisterUserSchema):
+    iban = fields.String(validate=validate.Length(min=14, max=22), required=True)

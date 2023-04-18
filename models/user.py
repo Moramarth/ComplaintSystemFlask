@@ -16,6 +16,7 @@ class ComplainerModel(BaseUserModel):
     __tablename__ = "complainers"
 
     role = db.Column(db.Enum(RoleType), default=RoleType.complainer, nullable=False)
+    iban = db.Column(db.String(22), nullable=False)
 
 
 class ApproverModel(BaseUserModel):

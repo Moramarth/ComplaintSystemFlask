@@ -23,7 +23,7 @@ class ComplaintListCreate(Resource):
     def post(self):
         complainer = auth.current_user()
         data = request.get_json()
-        complaint = ComplaintManager.create(data, complainer.id)
+        complaint = ComplaintManager.create(data, complainer)
         return ResponseComplaintSchema().dump(complaint)
 
 
