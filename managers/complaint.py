@@ -2,6 +2,8 @@ from db import db
 from models import ComplaintModel, ComplainerModel, ComplaintState, TransactionModel
 from services.wise import WiseService
 
+wise_service = WiseService()
+
 
 class ComplaintManager:
     @staticmethod
@@ -22,15 +24,18 @@ class ComplaintManager:
 
     @staticmethod
     def approve(id_):
+        transaction = TransactionModel.query.filter_by(complaint_id=id_).first()
+        wise_service.fund_transfer(transaction.transfer_id)
         ComplaintModel.query.filter_by(id=id_).update({"status": ComplaintState.approved})
 
     @staticmethod
     def reject(id_):
+        transaction = TransactionModel.query.filter_by(complaint_id=id_).first()
+        wise_service.cancel_transfer(transaction.transfer_id)
         ComplaintModel.query.filter_by(id=id_).update({"status": ComplaintState.rejected})
 
     @staticmethod
     def issue_transaction(amount, full_name, iban, complaint_id):
-        wise_service = WiseService()
         quote_id = wise_service.create_quote(amount)
         recipient_id = wise_service.create_recipient_account(full_name, iban)
         transfer_id = wise_service.create_transfer(recipient_id, quote_id)
@@ -44,4 +49,3 @@ class ComplaintManager:
         transaction = TransactionModel(**data)
         db.session.add(transaction)
         db.session.flush()
-

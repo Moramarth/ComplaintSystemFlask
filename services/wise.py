@@ -94,3 +94,14 @@ class WiseService:
         else:
             print(resp)
             raise InternalServerError("Payment provider is not available at the moment")
+
+    def cancel_transfer(self, transfer_id):
+        url = f"{self.main_url}v1/transfers/{transfer_id}/cancel"
+        resp = requests.put(url, headers=self.headers)
+
+        if resp.status_code == 200:
+            resp = resp.json()
+            return resp
+        else:
+            print(resp)
+            raise InternalServerError("Payment provider is not available at the moment")
