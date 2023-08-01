@@ -1,14 +1,29 @@
+import os
+import uuid
+
+from constants import TEMP_FILE_FOLDER
 from db import db
 from models import ComplaintModel, ComplainerModel, ComplaintState, TransactionModel
+from services.s3 import S3Service
 from services.wise import WiseService
+from utils.helpers import decode_photo
 
 wise_service = WiseService()
+s3 = S3Service()
 
 
 class ComplaintManager:
     @staticmethod
     def create(data, complainer):
         data["complainer_id"] = complainer.id
+        encoded_photo = data.pop("photo")
+        extension = data.pop("photo_extension")
+        name = f"{str(uuid.uuid4())}.{extension}"
+        path = os.path.join(TEMP_FILE_FOLDER, f"{name}")
+        decode_photo(path, encoded_photo)
+        url = s3.upload_photo(path, name)
+        data["photo_url"] = url
+        os.remove(path)
         complaint = ComplaintModel(**data)
         db.session.add(complaint)
         db.session.flush()
